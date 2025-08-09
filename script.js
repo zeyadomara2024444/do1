@@ -7,19 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     openBrowserBtn.addEventListener('click', () => {
         const url = window.location.href;
         
-        // استخدام الطريقة الجديدة التي تحاول فتح نافذة جديدة وإغلاق النافذة الحالية
-        try {
-            const newWindow = window.open(url, '_blank');
-            if (newWindow) {
-                window.close();
-            }
-        } catch (e) {
-            console.error("فشل في فتح نافذة جديدة: ", e);
-            if (/Android/i.test(navigator.userAgent)) {
-                window.location.href = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
-            } else {
-                window.location.href = url;
-            }
+        // استخدام Intent لفتح الرابط في متصفح خارجي على أندرويد
+        if (/Android/i.test(navigator.userAgent)) {
+            const intentUrl = `intent:${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+            window.location.href = intentUrl;
+        } 
+        // على iOS والأجهزة الأخرى، نحاول فتح نافذة جديدة
+        else {
+            window.open(url, '_blank');
         }
     });
 
