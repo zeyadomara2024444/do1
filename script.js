@@ -3,32 +3,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBrowserBtn = document.getElementById('openBrowserBtn');
     const closeWarningBtn = document.getElementById('closeWarningBtn');
 
-    // زر الفتح في المتصفح
+    // ✅ عرض التحذير فورًا
+    warningOverlay.style.display = 'flex';
+
+    // صفحة وسيطة لو فشل الفتح المباشر (تحط رابط صفحة من عندك فيها الشرح)
+    const fallbackPage = "https://yourdomain.com/open-in-browser.html";
+
     openBrowserBtn.addEventListener('click', () => {
         const url = window.location.href;
+        const userAgent = navigator.userAgent;
 
-        if (/Android/i.test(navigator.userAgent)) {
-            // محاولة 1: Chrome مباشرة
-            window.location.href = `googlechrome://${url.replace(/^https?:\/\//, '')}`;
+        // أندرويد
+        if (/Android/i.test(userAgent)) {
+            try {
+                // محاولة فتح كروم مباشرة
+                window.location.href = `googlechrome://${url.replace(/^https?:\/\//, '')}`;
+                
+                // fallback سريع لو اتمنع أو فشل
+                setTimeout(() => {
+                    window.location.href = fallbackPage;
+                }, 800);
 
-            // محاولة 2: Intent بعد 0.4 ثانية
-            setTimeout(() => {
-                window.location.href = `intent:${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;end`;
-            }, 400);
-
-            // محاولة 3: الرابط العادي بعد 0.8 ثانية
-            setTimeout(() => {
-                window.location.href = url;
-            }, 800);
-        } else {
-            // iOS والأجهزة الأخرى
-            window.open(url, '_blank');
+            } catch (e) {
+                window.location.href = fallbackPage;
+            }
+        } 
+        // iOS أو غيره
+        else {
+            try {
+                window.open(url, '_blank');
+            } catch (e) {
+                window.location.href = fallbackPage;
+            }
         }
     });
 
-    // زر الإغلاق
+    // زر إغلاق التحذير
     closeWarningBtn.addEventListener('click', () => {
         warningOverlay.style.display = 'none';
     });
-});
 
+    // جعل كل الروابط الخارجية تفتح في نافذة جديدة
+    document.querySelectorAll('a[href^="http"]').forEach(link => {
+        link.addEventListener('click', e => {
+            if (!link.href.includes(window.location.hostname)) {
+                e.preventDefault();
+                window.open(link.href, '_blank');
+            }
+        });
+    });
+});
