@@ -1,6 +1,6 @@
 /* تنسيقات عامة */
 :root {
-    --primary-color: #007bff; /* أزرق فاتح */
+    --primary-color: #007bff;
     --secondary-color: #ffffff;
     --light-bg: #f0f2f5;
     --card-bg: #ffffff;
@@ -62,7 +62,7 @@ body {
 }
 
 .main-app-section {
-    margin-top: -60px; /* عشان تظهر تحت الهيدر مباشرة */
+    margin-top: -60px;
     position: relative;
     z-index: 1;
 }

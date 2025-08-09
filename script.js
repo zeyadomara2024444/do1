@@ -1,19 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // الكود ده بيتعرف على المتصفحات المدمجة في تطبيقات تانية (مثل TikTok أو Telegram)
-    const isInAppBrowser = (
-        (window.navigator.standalone === false) || // For iOS
-        (window.matchMedia('(display-mode: standalone)').matches === false) // For other platforms
-    );
-
-    // لو الموقع مفتوح جوه متصفح مدمج، هينقله للمتصفح العادي
-    if (isInAppBrowser) {
-        // نفتح الرابط في نافذة جديدة
-        window.open(window.location.href, '_blank');
-        // ونقفل الصفحة الحالية عشان ما يبقاش فيه صفحتين مفتوحين
-        window.close();
+    // هذه وظيفة للتحقق مما إذا كانت الصفحة مفتوحة في متصفح مدمج داخل تطبيق
+    function is_in_app_browser() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        
+        // أمثلة على سلاسل وكيل المستخدم (User-Agent) في المتصفحات المدمجة
+        if (
+            (userAgent.match(/Tiktok/i)) ||
+            (userAgent.match(/FBAV/i) || userAgent.match(/FBIOS/i)) ||
+            (userAgent.match(/Instagram/i)) ||
+            (userAgent.match(/WebView/i))
+        ) {
+            return true;
+        }
+        return false;
     }
-    
-    // الجزء ده عشان لو المستخدم ضغط على أي رابط، يفتح في المتصفح العادي
+
+    // لو كانت الصفحة مفتوحة في متصفح مدمج، هينقل المستخدم للمتصفح العادي
+    if (is_in_app_browser()) {
+        window.open(window.location.href, '_blank');
+        
+        // هذا الجزء قد يساعد في إغلاق الصفحة القديمة، لكن قد لا يعمل في كل المتصفحات
+        setTimeout(() => {
+            window.close();
+        }, 1000);
+    }
+
+    // هذا الكود يضمن أن كل الروابط تفتح في نافذة جديدة (المتصفح العادي)
     const links = document.querySelectorAll('a[href]');
     links.forEach(link => {
         link.addEventListener('click', (event) => {
