@@ -1,55 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const warningOverlay = document.getElementById('inAppWarning');
-    const openBrowserBtn = document.getElementById('openBrowserBtn');
-    const closeWarningBtn = document.getElementById('closeWarningBtn');
+    const isTikTok = /tiktok/i.test(navigator.userAgent);
+    const currentUrl = window.location.href;
 
-    // ✅ عرض التحذير فورًا
-    warningOverlay.style.display = 'flex';
+    if (isTikTok) {
+        // إفراغ الصفحة
+        document.body.innerHTML = '';
 
-    // صفحة وسيطة لو فشل الفتح المباشر (تحط رابط صفحة من عندك فيها الشرح)
-    const fallbackPage = "https://yourdomain.com/open-in-browser.html";
+        // إنشاء الرسالة
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); color: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; font-family: sans-serif;
+        `;
 
-    openBrowserBtn.addEventListener('click', () => {
-        const url = window.location.href;
-        const userAgent = navigator.userAgent;
+        const title = document.createElement('h2');
+        title.textContent = "⚠ افتح الموقع في المتصفح الخارجي";
+        title.style.marginBottom = '15px';
 
-        // أندرويد
-        if (/Android/i.test(userAgent)) {
-            try {
-                // محاولة فتح كروم مباشرة
-                window.location.href = `googlechrome://${url.replace(/^https?:\/\//, '')}`;
-                
-                // fallback سريع لو اتمنع أو فشل
-                setTimeout(() => {
-                    window.location.href = fallbackPage;
-                }, 800);
+        const btn = document.createElement('button');
+        btn.textContent = "افتح في كروم / سفاري";
+        btn.style.cssText = `
+            background: #007bff; color: white; border: none; padding: 12px 25px;
+            border-radius: 8px; font-size: 1rem; cursor: pointer;
+        `;
 
-            } catch (e) {
-                window.location.href = fallbackPage;
+        btn.onclick = () => {
+            if (/Android/i.test(navigator.userAgent)) {
+                // فتح كروم مباشرة
+                window.location.href = `intent:${currentUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+            } else {
+                // iOS يفتح في نافذة جديدة (سفاري)
+                window.open(currentUrl, '_blank');
             }
-        } 
-        // iOS أو غيره
-        else {
-            try {
-                window.open(url, '_blank');
-            } catch (e) {
-                window.location.href = fallbackPage;
-            }
-        }
-    });
+        };
 
-    // زر إغلاق التحذير
-    closeWarningBtn.addEventListener('click', () => {
-        warningOverlay.style.display = 'none';
-    });
-
-    // جعل كل الروابط الخارجية تفتح في نافذة جديدة
-    document.querySelectorAll('a[href^="http"]').forEach(link => {
-        link.addEventListener('click', e => {
-            if (!link.href.includes(window.location.hostname)) {
-                e.preventDefault();
-                window.open(link.href, '_blank');
-            }
-        });
-    });
+        overlay.appendChild(title);
+        overlay.appendChild(btn);
+        document.body.appendChild(overlay);
+    }
 });
