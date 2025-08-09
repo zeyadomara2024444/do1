@@ -2,16 +2,16 @@
 :root {
     --primary-color: #007bff;
     --secondary-color: #ffffff;
-    --dark-bg: #121212;
-    --card-bg: #1e1e1e;
-    --font-color: #e0e0e0;
+    --light-bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --font-color: #333;
     --accent-color: #007bff;
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 body {
     font-family: 'Tajawal', sans-serif;
-    background-color: var(--dark-bg);
+    background-color: var(--light-bg);
     color: var(--font-color);
     margin: 0;
     padding: 0;
@@ -26,14 +26,14 @@ body {
     padding: 20px;
 }
 
-/* شاشة التحذير */
+/* شاشة التحذير - ثابتة */
 .warning-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,8 +46,7 @@ body {
     border-radius: 15px;
     text-align: center;
     max-width: 300px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .warning-box h2 {
@@ -79,7 +78,7 @@ body {
 
 /* تنسيقات الهيدر */
 .hero-section {
-    background: linear-gradient(135deg, #0056b3, #007bff);
+    background: var(--accent-color);
     color: var(--secondary-color);
     text-align: center;
     padding: 80px 20px;
@@ -91,7 +90,6 @@ body {
 .hero-section h1 {
     font-size: 3.5rem;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-section p {
@@ -112,7 +110,7 @@ body {
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .main-app-section {
@@ -214,17 +212,16 @@ body {
 
 .small-card p {
     font-size: 0.9rem;
-    color: #a0a0a0;
+    color: #666;
 }
 
 /* الجزء السفلي */
 footer {
     text-align: center;
     padding: 20px;
-    background: #1e1e1e;
-    color: #888;
+    background: var(--accent-color);
+    color: var(--secondary-color);
     margin-top: 40px;
-    border-top: 1px solid #333;
 }
 
 /* تحسينات الموبايل */

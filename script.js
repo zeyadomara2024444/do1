@@ -10,8 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (isInAppBrowser()) {
-        document.getElementById('inAppWarning').style.display = 'flex';
-        document.getElementById('openBrowserBtn').addEventListener('click', () => {
+        const warningOverlay = document.getElementById('inAppWarning');
+        const openBrowserBtn = document.getElementById('openBrowserBtn');
+
+        warningOverlay.style.display = 'flex';
+
+        openBrowserBtn.addEventListener('click', () => {
+            // إخفاء مربع التحذير فور الضغط على الزر
+            warningOverlay.style.display = 'none';
+
             const url = window.location.href;
             if (/Android/i.test(navigator.userAgent)) {
                 window.location.href = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
