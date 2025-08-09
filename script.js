@@ -3,18 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBrowserBtn = document.getElementById('openBrowserBtn');
     const closeWarningBtn = document.getElementById('closeWarningBtn');
 
-    // دالة للكشف عن المتصفحات المدمجة
-    function isInAppBrowser() {
-        const ua = navigator.userAgent || navigator.vendor || window.opera;
-        return /FBAN|FBAV|Instagram|Twitter|TikTok|Line|Snapchat|WhatsApp|Messenger/i.test(ua);
-    }
-
-    // إظهار أو إخفاء التحذير حسب نوع المتصفح
-    if (isInAppBrowser()) {
-        warningOverlay.style.display = 'flex';
-    } else {
-        warningOverlay.style.display = 'none';
-    }
+    // ✅ التحذير يظهر فورًا لأي حد
+    warningOverlay.style.display = 'flex';
 
     // زر فتح الموقع في المتصفح الخارجي
     openBrowserBtn.addEventListener('click', () => {
