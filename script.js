@@ -3,31 +3,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBrowserBtn = document.getElementById('openBrowserBtn');
     const closeWarningBtn = document.getElementById('closeWarningBtn');
 
-    // وظيفة لفتح الموقع في المتصفح الخارجي
+    // دالة للكشف عن المتصفحات المدمجة
+    function isInAppBrowser() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        return /FBAN|FBAV|Instagram|Twitter|TikTok|Line|Snapchat|WhatsApp|Messenger/i.test(ua);
+    }
+
+    // إظهار أو إخفاء التحذير حسب نوع المتصفح
+    if (isInAppBrowser()) {
+        warningOverlay.style.display = 'flex';
+    } else {
+        warningOverlay.style.display = 'none';
+    }
+
+    // زر فتح الموقع في المتصفح الخارجي
     openBrowserBtn.addEventListener('click', () => {
         const url = window.location.href;
-        
-        // استخدام Intent لفتح الرابط في متصفح خارجي على أندرويد
+
         if (/Android/i.test(navigator.userAgent)) {
-            const intentUrl = `intent:${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
-            window.location.href = intentUrl;
-        } 
-        // على iOS والأجهزة الأخرى، نحاول فتح نافذة جديدة
-        else {
+            try {
+                // محاولة فتح كروم مباشرة
+                window.location.href = `googlechrome://${url.replace(/^https?:\/\//, '')}`;
+                // لو فشلت المحاولة نفتح الرابط العادي
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 500);
+            } catch (e) {
+                window.location.href = url;
+            }
+        } else {
+            // iOS أو باقي الأنظمة
             window.open(url, '_blank');
         }
     });
 
-    // وظيفة إغلاق مربع التحذير
+    // زر إغلاق التحذير
     closeWarningBtn.addEventListener('click', () => {
         warningOverlay.style.display = 'none';
     });
 
-    // جميع الروابط تفتح في نافذة جديدة
-    document.querySelectorAll('a[href]').forEach(link => {
+    // فتح الروابط الخارجية في نافذة جديدة فقط
+    document.querySelectorAll('a[href^="http"]').forEach(link => {
         link.addEventListener('click', e => {
-            e.preventDefault();
-            window.open(link.href, '_blank');
+            if (!link.href.includes(window.location.hostname)) {
+                e.preventDefault();
+                window.open(link.href, '_blank');
+            }
         });
     });
 });
