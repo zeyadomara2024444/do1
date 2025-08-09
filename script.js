@@ -1,33 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // وظيفة للتحقق من المتصفح المدمج
     function isInAppBrowser() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-        const isAndroid = /Android/.test(userAgent);
-        const is_in_app = (
-            (isIOS && userAgent.includes('Tiktok')) || // TikTok on iOS
-            (isAndroid && userAgent.includes('Tiktok')) || // TikTok on Android
-            (isIOS && (userAgent.includes('Instagram') || userAgent.includes('FBAV') || userAgent.includes('Messenger'))) ||
-            (isAndroid && (userAgent.includes('Instagram') || userAgent.includes('FBAV') || userAgent.includes('Messenger'))) ||
-            (isAndroid && userAgent.includes('WebView'))
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+        const isAndroid = /Android/.test(ua);
+        return (
+            (isIOS && /Tiktok|Instagram|FBAV|Messenger/i.test(ua)) ||
+            (isAndroid && /Tiktok|Instagram|FBAV|Messenger/i.test(ua)) ||
+            (isAndroid && ua.includes('WebView'))
         );
-        return is_in_app;
     }
 
-    // الكود ده هيجبر الصفحة تفتح في المتصفح العادي مباشرة
     if (isInAppBrowser()) {
-        const url = window.location.href;
-        window.location.href = url;
+        const outsideURL = window.location.href;
+
+        if (/Android/i.test(navigator.userAgent)) {
+            // أندرويد → يفتح Chrome أو المتصفح الافتراضي
+            window.location.href = `intent://${outsideURL.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+        } 
+        else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            // iOS → محاولة فتح Safari تلقائيًا
+            setTimeout(() => {
+                window.open(outsideURL, '_blank');
+                alert("لو ما فتح الرابط تلقائي، اضغط مشاركة > فتح في Safari");
+            }, 500);
+        }
     }
 
-    // هذا الكود يضمن أن كل الروابط تفتح في نافذة جديدة (المتصفح العادي)
-    const links = document.querySelectorAll('a[href]');
-    links.forEach(link => {
-        link.addEventListener('click', (event) => {
-            event.preventDefault();
-            const href = link.getAttribute('href');
-            window.open(href, '_blank');
+    // جعل الروابط تفتح في نافذة جديدة (لضمان الخروج من المتصفح المدمج)
+    document.querySelectorAll('a[href]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            window.open(link.href, '_blank');
         });
     });
 });
