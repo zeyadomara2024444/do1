@@ -1,32 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
     function isInAppBrowser() {
         const ua = navigator.userAgent || navigator.vendor || window.opera;
-        const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-        const isAndroid = /Android/.test(ua);
         return (
-            (isIOS && /Tiktok|Instagram|FBAV|Messenger/i.test(ua)) ||
-            (isAndroid && /Tiktok|Instagram|FBAV|Messenger/i.test(ua)) ||
-            (isAndroid && ua.includes('WebView'))
+            /Tiktok/i.test(ua) ||
+            /FBAV|FBIOS/i.test(ua) ||
+            /Instagram/i.test(ua) ||
+            /WebView/i.test(ua)
         );
     }
 
     if (isInAppBrowser()) {
-        const outsideURL = window.location.href;
-
-        if (/Android/i.test(navigator.userAgent)) {
-            // أندرويد → يفتح Chrome أو المتصفح الافتراضي
-            window.location.href = `intent://${outsideURL.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
-        } 
-        else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            // iOS → محاولة فتح Safari تلقائيًا
-            setTimeout(() => {
-                window.open(outsideURL, '_blank');
-                alert("لو ما فتح الرابط تلقائي، اضغط مشاركة > فتح في Safari");
-            }, 500);
-        }
+        document.getElementById('inAppWarning').style.display = 'flex';
+        document.getElementById('openBrowserBtn').addEventListener('click', () => {
+            const url = window.location.href;
+            if (/Android/i.test(navigator.userAgent)) {
+                window.location.href = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+            } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.open(url, '_blank');
+                alert('لو ما فتح الرابط تلقائي، اضغط مشاركة > فتح في Safari');
+            } else {
+                window.open(url, '_blank');
+            }
+        });
     }
 
-    // جعل الروابط تفتح في نافذة جديدة (لضمان الخروج من المتصفح المدمج)
+    // جميع الروابط تفتح في نافذة جديدة
     document.querySelectorAll('a[href]').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
