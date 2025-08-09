@@ -15,9 +15,15 @@
     <div id="inAppWarning" class="warning-overlay">
         <div class="warning-box">
             <h2>⚠ افتح في المتصفح</h2>
-            <p>لتجربة أفضل، يفضل فتح الموقع في المتصفح العادي.</p>
+            <p id="warningMessage">
+                لضمان أفضل تجربة، اضغط على الزر لفتح الموقع في المتصفح الخارجي.
+                <br>
+                **ملاحظة:** إذا لم يعمل الزر تلقائيًا، انسخ الرابط وافتحه بنفسك.
+            </p>
             <button id="openBrowserBtn">فتح في المتصفح</button>
-            <p class="copy-link-instruction" style="display: none;">أو انسخ الرابط وافتحه بنفسك: <span id="copyLink" style="font-weight: bold; cursor: pointer;">انقر هنا لنسخ الرابط</span></p>
+            <p class="copy-link-instruction">
+                <span id="copyLink" style="font-weight: bold; cursor: pointer; text-decoration: underline;">انقر هنا لنسخ الرابط</span>
+            </p>
             <button id="closeWarningBtn">إغلاق</button>
         </div>
     </div>
