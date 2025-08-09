@@ -3,42 +3,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBrowserBtn = document.getElementById('openBrowserBtn');
     const closeWarningBtn = document.getElementById('closeWarningBtn');
 
-    // ✅ التحذير يظهر فورًا لأي حد
-    warningOverlay.style.display = 'flex';
-
-    // زر فتح الموقع في المتصفح الخارجي
+    // زر الفتح في المتصفح
     openBrowserBtn.addEventListener('click', () => {
         const url = window.location.href;
 
         if (/Android/i.test(navigator.userAgent)) {
-            try {
-                // محاولة فتح كروم مباشرة
-                window.location.href = `googlechrome://${url.replace(/^https?:\/\//, '')}`;
-                // لو فشلت المحاولة نفتح الرابط العادي
-                setTimeout(() => {
-                    window.location.href = url;
-                }, 500);
-            } catch (e) {
+            // محاولة 1: Chrome مباشرة
+            window.location.href = `googlechrome://${url.replace(/^https?:\/\//, '')}`;
+
+            // محاولة 2: Intent بعد 0.4 ثانية
+            setTimeout(() => {
+                window.location.href = `intent:${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;end`;
+            }, 400);
+
+            // محاولة 3: الرابط العادي بعد 0.8 ثانية
+            setTimeout(() => {
                 window.location.href = url;
-            }
+            }, 800);
         } else {
-            // iOS أو باقي الأنظمة
+            // iOS والأجهزة الأخرى
             window.open(url, '_blank');
         }
     });
 
-    // زر إغلاق التحذير
+    // زر الإغلاق
     closeWarningBtn.addEventListener('click', () => {
         warningOverlay.style.display = 'none';
     });
-
-    // فتح الروابط الخارجية في نافذة جديدة فقط
-    document.querySelectorAll('a[href^="http"]').forEach(link => {
-        link.addEventListener('click', e => {
-            if (!link.href.includes(window.location.hostname)) {
-                e.preventDefault();
-                window.open(link.href, '_blank');
-            }
-        });
-    });
 });
+
