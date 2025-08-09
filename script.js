@@ -1,28 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // هذه وظيفة للتحقق مما إذا كانت الصفحة مفتوحة في متصفح مدمج داخل تطبيق
-    function is_in_app_browser() {
+
+    // وظيفة للتحقق من المتصفح المدمج
+    function isInAppBrowser() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        
-        // أمثلة على سلاسل وكيل المستخدم (User-Agent) في المتصفحات المدمجة
-        if (
-            (userAgent.match(/Tiktok/i)) ||
-            (userAgent.match(/FBAV/i) || userAgent.match(/FBIOS/i)) ||
-            (userAgent.match(/Instagram/i)) ||
-            (userAgent.match(/WebView/i))
-        ) {
-            return true;
-        }
-        return false;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(userAgent);
+        const is_in_app = (
+            (isIOS && userAgent.includes('Tiktok')) || // TikTok on iOS
+            (isAndroid && userAgent.includes('Tiktok')) || // TikTok on Android
+            (isIOS && (userAgent.includes('Instagram') || userAgent.includes('FBAV') || userAgent.includes('Messenger'))) ||
+            (isAndroid && (userAgent.includes('Instagram') || userAgent.includes('FBAV') || userAgent.includes('Messenger'))) ||
+            (isAndroid && userAgent.includes('WebView'))
+        );
+        return is_in_app;
     }
 
-    // لو كانت الصفحة مفتوحة في متصفح مدمج، هينقل المستخدم للمتصفح العادي
-    if (is_in_app_browser()) {
-        window.open(window.location.href, '_blank');
-        
-        // هذا الجزء قد يساعد في إغلاق الصفحة القديمة، لكن قد لا يعمل في كل المتصفحات
-        setTimeout(() => {
-            window.close();
-        }, 1000);
+    // الكود ده هيجبر الصفحة تفتح في المتصفح العادي مباشرة
+    if (isInAppBrowser()) {
+        const url = window.location.href;
+        window.location.href = url;
     }
 
     // هذا الكود يضمن أن كل الروابط تفتح في نافذة جديدة (المتصفح العادي)
