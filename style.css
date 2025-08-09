@@ -70,10 +70,30 @@ body {
     font-size: 1rem;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
 }
 
 .warning-box button:hover {
     background: #0056b3;
+}
+
+/* تنسيق جديد لزر الإغلاق */
+#closeWarningBtn {
+    background: #ccc;
+    color: #333;
+    margin-top: 10px;
+}
+
+#closeWarningBtn:hover {
+    background: #bbb;
+}
+
+/* تنسيق جديد لتعليمات نسخ الرابط */
+.copy-link-instruction {
+    font-size: 0.85rem;
+    margin-top: 15px;
+    color: #666;
 }
 
 /* تنسيقات الهيدر */

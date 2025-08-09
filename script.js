@@ -1,28 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // تحديد العناصر
+    function isInAppBrowser() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        return (
+            /Tiktok/i.test(ua) ||
+            /FBAV|FBIOS/i.test(ua) ||
+            /Instagram/i.test(ua) ||
+            /WebView/i.test(ua)
+        );
+    }
+    
     const warningOverlay = document.getElementById('inAppWarning');
     const openBrowserBtn = document.getElementById('openBrowserBtn');
     const closeWarningBtn = document.getElementById('closeWarningBtn');
-    const url = window.location.href;
+    const copyLink = document.getElementById('copyLink');
+    const copyLinkInstruction = document.querySelector('.copy-link-instruction');
 
-    // إضافة وظيفة لزر "فتح في المتصفح"
+    // إظهار مربع التحذير فقط إذا كان المستخدم في متصفح مدمج
+    if (isInAppBrowser()) {
+        warningOverlay.style.display = 'flex';
+        // إظهار تعليمات نسخ الرابط على iOS
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            copyLinkInstruction.style.display = 'block';
+        }
+    } else {
+        warningOverlay.style.display = 'none';
+    }
+
+    // وظيفة فتح في المتصفح الخارجي
     openBrowserBtn.addEventListener('click', () => {
-        // على أجهزة أندرويد، نحاول استخدام intent://
+        const url = window.location.href;
+        
+        // محاولة إعادة التوجيه التلقائي على أندرويد
         if (/Android/i.test(navigator.userAgent)) {
             window.location.href = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
         } 
-        // على أجهزة iOS والأجهزة الأخرى، نفتح في علامة تبويب جديدة
+        // محاولة فتح في نافذة جديدة على iOS والأجهزة الأخرى
         else {
             window.open(url, '_blank');
         }
     });
 
-    // إضافة وظيفة لزر "إغلاق" لإخفاء مربع التحذير
+    // وظيفة نسخ الرابط
+    copyLink.addEventListener('click', () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('تم نسخ الرابط بنجاح! يمكنك الآن فتحه في متصفحك.');
+        }).catch(err => {
+            console.error('فشل في نسخ الرابط:', err);
+            alert('فشل في النسخ. يرجى محاولة النسخ يدويًا.');
+        });
+    });
+
+    // وظيفة إغلاق مربع التحذير
     closeWarningBtn.addEventListener('click', () => {
         warningOverlay.style.display = 'none';
     });
-
-    // فتح جميع الروابط في نافذة جديدة
+    
+    // جميع الروابط تفتح في نافذة جديدة
     document.querySelectorAll('a[href]').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
